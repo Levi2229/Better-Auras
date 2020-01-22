@@ -1,0 +1,3 @@
+displayName = More Auras
+author = Oempa
+version = 0.1
