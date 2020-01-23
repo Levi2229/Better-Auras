@@ -19,6 +19,8 @@ namespace MoreAuras
         public AuraModProjectile spikedRock;
         public AuraModProjectile vileRock;
         public AuraModProjectile burningRock;
+        public AuraModProjectile ghastlyRock;
+        public AuraModProjectile moonCore;
 
         public override void ResetEffects()
         {
@@ -26,6 +28,8 @@ namespace MoreAuras
             spikedRock.isActive = false;
             vileRock.isActive = false;
             burningRock.isActive = false;
+            ghastlyRock.isActive = false;
+            moonCore.isActive = false;
         }
 
         public override void Initialize()
@@ -51,6 +55,16 @@ namespace MoreAuras
             burningRock.amount = AuraCount.Medium;
             burningRock.damage = AuraDamage.Medium;
             burningRock.knockback = 0;
+            ghastlyRock = new GhastlyRockAura();
+            ghastlyRock.speed = AuraSpeeds.Fast;
+            ghastlyRock.amount = AuraCount.VeryHigh;
+            ghastlyRock.damage = AuraDamage.Medium;
+            ghastlyRock.knockback = 0;
+            moonCore = new MoonCoreAura();
+            moonCore.speed = AuraSpeeds.Flash;
+            moonCore.amount = AuraCount.High;
+            moonCore.damage = AuraDamage.Insane;
+            moonCore.knockback = 0;
         }
 
         public override void PostUpdateEquips()
@@ -126,7 +140,6 @@ namespace MoreAuras
 
             if (burningRock.isActive && burningRock.instanceIds.Count < burningRock.amount)
             {
-
                 Random rnd = new Random();
                 for (int i = 0; i < burningRock.amount; i++)
                 {
@@ -148,6 +161,59 @@ namespace MoreAuras
                     int clockwise = i % 2;
                     Main.projectile[burningRockInstanceId].localAI[1] = clockwise != 0 ? 1 : -1;
                     NetMessage.SendData(27, -1, -1, null, burningRockInstanceId);
+                }
+            }
+
+            if (ghastlyRock.isActive && ghastlyRock.instanceIds.Count < ghastlyRock.amount)
+            {
+
+                Random rnd = new Random();
+                for (int i = 0; i < ghastlyRock.amount; i++)
+                {
+                    int randomInt = rnd.Next(0, 360);
+                    int ghastlyRockkInstanceId = Projectile.NewProjectile(
+                                player.Center.X,
+                                player.Center.Y,
+                                0,
+                                0,
+                                ProjectileType<GhastlyRockAura>(),
+                                ghastlyRock.damage,
+                                ghastlyRock.knockback,
+                                Main.myPlayer,
+                                player.whoAmI,
+                                randomInt
+                               );
+                    ghastlyRock.instanceIds.Add(ghastlyRockkInstanceId);
+                    Main.projectile[ghastlyRockkInstanceId].localAI[0] = (int)AuraRadius.Huge;
+                    int clockwise = i % 2;
+                    Main.projectile[ghastlyRockkInstanceId].localAI[1] = clockwise != 0 ? 1 : -1;
+                    NetMessage.SendData(27, -1, -1, null, ghastlyRockkInstanceId);
+                }
+            }
+            if (moonCore.isActive && moonCore.instanceIds.Count < moonCore.amount)
+            {
+
+                Random rnd = new Random();
+                for (int i = 0; i < moonCore.amount; i++)
+                {
+                    int randomInt = rnd.Next(0, 360);
+                    int moonCoreInstanceId = Projectile.NewProjectile(
+                                player.Center.X,
+                                player.Center.Y,
+                                0,
+                                0,
+                                ProjectileType<MoonCoreAura>(),
+                                moonCore.damage,
+                                moonCore.knockback,
+                                Main.myPlayer,
+                                player.whoAmI,
+                                randomInt
+                               );
+                    moonCore.instanceIds.Add(moonCoreInstanceId);
+                    Main.projectile[moonCoreInstanceId].localAI[0] = (int)AuraRadius.Space;
+                    int clockwise = i % 2;
+                    Main.projectile[moonCoreInstanceId].localAI[1] = clockwise != 0 ? 1 : -1;
+                    NetMessage.SendData(27, -1, -1, null, moonCoreInstanceId);
                 }
             }
         }
@@ -186,6 +252,22 @@ namespace MoreAuras
                     Main.projectile[instanceid].Kill();
                 }
                 burningRock.instanceIds = new List<int>();
+            }
+            if (!ghastlyRock.isActive)
+            {
+                foreach (int instanceid in ghastlyRock.instanceIds)
+                {
+                    Main.projectile[instanceid].Kill();
+                }
+                ghastlyRock.instanceIds = new List<int>();
+            }
+            if (!moonCore.isActive)
+            {
+                foreach (int instanceid in moonCore.instanceIds)
+                {
+                    Main.projectile[instanceid].Kill();
+                }
+                moonCore.instanceIds = new List<int>();
             }
         }
     }

@@ -35,6 +35,7 @@ namespace MoreAuras.Projectiles
             projectile.penetrate = -1;
             projectile.magic = true;
             projectile.tileCollide = false;
+            projectile.timeLeft = 999999999;
             projectile.ignoreWater = true;
             projectile.netImportant = true;
             rnd = (float)random.NextDouble();
