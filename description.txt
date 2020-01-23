@@ -1,1 +1,5 @@
-More Auras is a pretty cool mod, it does...this. Modify this file with a description of your mod.
+More Auras is a mod that attempts to increase the viability of Aura accessories.
+It adds 7 new accessories.
+These will spawn moving projectiles around the player that will damage anything that comes into contact with them.
+
+Especially the end game ones are pretty cool! Check it out :)
