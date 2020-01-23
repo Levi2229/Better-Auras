@@ -17,5 +17,6 @@ namespace MoreAuras
         public const float Lamborghini = 10;
         public const float Sonic = 20;
         public const float Flash = 35;
+        public const float Invisible = 45;
     }
 }

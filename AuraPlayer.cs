@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
@@ -21,6 +22,7 @@ namespace MoreAuras
         public AuraModProjectile burningRock;
         public AuraModProjectile ghastlyRock;
         public AuraModProjectile moonCore;
+        public AuraModProjectile homingBullet;
 
         public override void ResetEffects()
         {
@@ -30,6 +32,7 @@ namespace MoreAuras
             burningRock.isActive = false;
             ghastlyRock.isActive = false;
             moonCore.isActive = false;
+            homingBullet.isActive = false;
         }
 
         public override void Initialize()
@@ -40,31 +43,42 @@ namespace MoreAuras
             stevesRock.amount = AuraCount.Lowest;
             stevesRock.damage = AuraDamage.Lowest;
             stevesRock.knockback = 0;
+
             spikedRock = new SpikedRockAura();
             spikedRock.speed = AuraSpeeds.Slow;
             spikedRock.amount = AuraCount.Lowest;
             spikedRock.damage = AuraDamage.VeryLow;
             spikedRock.knockback = 0;
+
             vileRock = new VileRockAura();
             vileRock.speed = AuraSpeeds.Medium;
             vileRock.amount = AuraCount.Low;
             vileRock.damage = AuraDamage.Low;
             vileRock.knockback = 0;
+
             burningRock = new BurningRockAura();
             burningRock.speed = AuraSpeeds.Rapid;
             burningRock.amount = AuraCount.Medium;
             burningRock.damage = AuraDamage.Medium;
             burningRock.knockback = 0;
+
             ghastlyRock = new GhastlyRockAura();
             ghastlyRock.speed = AuraSpeeds.Fast;
             ghastlyRock.amount = AuraCount.VeryHigh;
             ghastlyRock.damage = AuraDamage.Medium;
             ghastlyRock.knockback = 0;
+
             moonCore = new MoonCoreAura();
             moonCore.speed = AuraSpeeds.Flash;
             moonCore.amount = AuraCount.High;
             moonCore.damage = AuraDamage.Insane;
             moonCore.knockback = 0;
+
+            homingBullet = new HomingBulletAura();
+            homingBullet.speed = 300;
+            homingBullet.amount = AuraCount.Low;
+            homingBullet.damage = AuraDamage.High;
+            homingBullet.knockback = 0;
         }
 
         public override void PostUpdateEquips()
@@ -216,6 +230,32 @@ namespace MoreAuras
                     NetMessage.SendData(27, -1, -1, null, moonCoreInstanceId);
                 }
             }
+            if (homingBullet.isActive && homingBullet.instanceIds.Count < homingBullet.amount)
+            {
+
+                Random rnd = new Random();
+                for (int i = 0; i < homingBullet.amount; i++)
+                {
+                    int randomInt = rnd.Next(0, 360);
+                    int homingBulletInstanceId = Projectile.NewProjectile(
+                                player.Center.X,
+                                player.Center.Y,
+                                0,
+                                0,
+                                ProjectileType<HomingBulletAura>(),
+                                homingBullet.damage,
+                                homingBullet.knockback,
+                                Main.myPlayer,
+                                player.whoAmI,
+                                randomInt
+                               );
+                    homingBullet.instanceIds.Add(homingBulletInstanceId);
+                    Main.projectile[homingBulletInstanceId].localAI[0] = (int)AuraRadius.Space;
+                    int clockwise = i % 2;
+                    Main.projectile[homingBulletInstanceId].localAI[1] = clockwise != 0 ? 1 : -1;
+                    NetMessage.SendData(27, -1, -1, null, homingBulletInstanceId);
+                }
+            }
         }
 
 
@@ -269,6 +309,18 @@ namespace MoreAuras
                 }
                 moonCore.instanceIds = new List<int>();
             }
+            if (!homingBullet.isActive)
+            {
+                foreach (int instanceid in homingBullet.instanceIds)
+                {
+                    Main.projectile[instanceid].Kill();
+                }
+                homingBullet.instanceIds = new List<int>();
+            }
+        }
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        {
+            this.ResetEffects();
         }
     }
 }

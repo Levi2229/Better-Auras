@@ -17,7 +17,7 @@ namespace MoreAuras.Projectiles
             DisplayName.SetDefault("Vile Rock");
         }
 
-        public override string Texture => mod.Name + "/Projectiles/VileRockAura";
+        public override string Texture => mod.Name + "/Items/VileRock";
 
 
     }

@@ -27,6 +27,6 @@ namespace MoreAuras.Projectiles
             projectile.Center = center.Center + projectile.localAI[0] * new Vector2((float)Math.Cos(projectile.ai[1]), (float)Math.Sin(projectile.ai[1]));
         }
 
-        public override string Texture => mod.Name + "/Projectiles/GhastlyRockAura";
+        public override string Texture => mod.Name + "/Items/GhastlyRock";
     }
 }

@@ -17,7 +17,7 @@ namespace MoreAuras.Projectiles
             DisplayName.SetDefault("Burning Rock");
         }
 
-        public override string Texture => mod.Name + "/Projectiles/BurningRockAura";
+        public override string Texture => mod.Name + "/Items/BurningRock";
 
 
     }

@@ -72,6 +72,6 @@ namespace MoreAuras.Projectiles
             }
         }
 
-        public override string Texture => mod.Name + "/Projectiles/MoonCoreAura";
+        public override string Texture => mod.Name + "/Items/MoonCore";
     }
 }
